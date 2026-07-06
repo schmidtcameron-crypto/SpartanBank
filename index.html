@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#11131a">
+    <title>Spartan Budget Command</title>
+    <link rel="manifest" href="./manifest.json">
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">Local monthly ops</p>
+          <h1>Spartan Budget Command</h1>
+          <p class="command-line">Chief mode // credits online // shield reserve armed</p>
+        </div>
+        <div class="save-pill" aria-live="polite">
+          <span class="save-dot" aria-hidden="true"></span>
+          <span id="saveStatus">HUD saved locally</span>
+        </div>
+      </header>
+
+      <section class="panel income-panel" aria-labelledby="incomeTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Credits</p>
+            <h2 id="incomeTitle">Credit Intake</h2>
+          </div>
+          <div class="big-total">
+            <span>Monthly credits available</span>
+            <strong id="totalIncome">$0.00</strong>
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <label class="money-field" for="monthlyIncome">
+            <span>Monthly average income</span>
+            <span class="input-wrap">
+              <span aria-hidden="true">$</span>
+              <input id="monthlyIncome" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00">
+            </span>
+          </label>
+
+          <label class="money-field" for="weeklyIncome">
+            <span>Weekly average income</span>
+            <span class="input-wrap">
+              <span aria-hidden="true">$</span>
+              <input id="weeklyIncome" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00">
+            </span>
+          </label>
+
+          <label class="money-field" for="extraIncome">
+            <span>Overtime / extra income</span>
+            <span class="input-wrap">
+              <span aria-hidden="true">$</span>
+              <input id="extraIncome" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00">
+            </span>
+          </label>
+        </div>
+      </section>
+
+      <section aria-labelledby="summaryTitle">
+        <div class="section-heading compact-heading">
+          <div>
+            <p class="eyebrow">Dashboard</p>
+            <h2 id="summaryTitle">Monthly Summary</h2>
+          </div>
+        </div>
+
+        <div class="summary-grid">
+          <article class="summary-card accent-income">
+            <span>Monthly credits</span>
+            <strong id="summaryIncome">$0.00</strong>
+          </article>
+          <article class="summary-card">
+            <span>Committed credits</span>
+            <strong id="summaryBudgeted">$0.00</strong>
+          </article>
+          <article class="summary-card">
+            <span>Credits spent</span>
+            <strong id="summaryActual">$0.00</strong>
+          </article>
+          <article class="summary-card accent-today">
+            <span>Logged today</span>
+            <strong id="summaryToday">$0.00</strong>
+          </article>
+          <article class="summary-card" id="moneyRemainingCard">
+            <span>Credits in reserve</span>
+            <strong id="summaryRemaining">$0.00</strong>
+          </article>
+          <article class="summary-card" id="overBudgetCard">
+            <span>Critical overage</span>
+            <strong id="summaryOver">$0.00</strong>
+          </article>
+          <article class="summary-card accent-debt">
+            <span>Debt targets</span>
+            <strong id="summaryDebt">$0.00</strong>
+          </article>
+          <article class="summary-card accent-savings">
+            <span>Shield reserve</span>
+            <strong id="summarySavings">$0.00</strong>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel tools-panel" aria-labelledby="toolsTitle">
+        <div class="section-heading compact-heading">
+          <div>
+            <p class="eyebrow">Armory</p>
+            <h2 id="toolsTitle">Loadout Controls</h2>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button id="addBucket" type="button" class="button primary">Add Module</button>
+          <button id="exportData" type="button" class="button">Download Backup</button>
+          <button id="copyData" type="button" class="button">Copy Backup</button>
+          <button id="resetDefaults" type="button" class="button danger-ghost">Reset Defaults</button>
+        </div>
+
+        <details class="import-panel">
+          <summary>Restore Backup</summary>
+          <label for="importJson" class="import-label">Paste JSON backup</label>
+          <textarea id="importJson" rows="6" spellcheck="false" placeholder='{"income":...,"buckets":[...]}'></textarea>
+          <div class="button-row import-actions">
+            <button id="importData" type="button" class="button primary">Restore Data</button>
+            <button id="clearImport" type="button" class="button">Clear</button>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel transaction-panel" aria-labelledby="transactionsTitle">
+        <div class="section-heading compact-heading">
+          <div>
+            <p class="eyebrow">Daily Debrief</p>
+            <h2 id="transactionsTitle">Transaction Log</h2>
+          </div>
+          <div class="briefing-total">
+            <span>Logged today</span>
+            <strong id="transactionTodayTotal">$0.00</strong>
+          </div>
+        </div>
+
+        <form id="transactionForm" class="transaction-form">
+          <label class="select-field" for="transactionDate">
+            <span>Date</span>
+            <input id="transactionDate" type="date">
+          </label>
+
+          <label class="select-field" for="transactionBucket">
+            <span>Module</span>
+            <select id="transactionBucket"></select>
+          </label>
+
+          <label class="money-field" for="transactionAmount">
+            <span>Amount</span>
+            <span class="input-wrap">
+              <span aria-hidden="true">$</span>
+              <input id="transactionAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00">
+            </span>
+          </label>
+
+          <label class="select-field transaction-note-field" for="transactionNote">
+            <span>Note</span>
+            <input id="transactionNote" type="text" placeholder="Fuel, dinner, parts, payment">
+          </label>
+
+          <button id="addTransaction" type="submit" class="button primary transaction-submit">Log Transaction</button>
+        </form>
+
+        <div class="transaction-toolbar">
+          <span id="transactionCount" class="count-pill">0 transactions</span>
+          <span class="mission-hint">New logs update module spent credits automatically.</span>
+        </div>
+
+        <div id="transactionList" class="transaction-list" aria-live="polite"></div>
+      </section>
+
+      <section aria-labelledby="bucketsTitle">
+        <div class="section-heading compact-heading">
+          <div>
+            <p class="eyebrow">Modules</p>
+            <h2 id="bucketsTitle">Budget Modules</h2>
+          </div>
+          <span id="bucketCount" class="count-pill">0 modules</span>
+        </div>
+
+        <div id="bucketList" class="bucket-list"></div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
